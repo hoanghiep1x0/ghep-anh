@@ -4,27 +4,23 @@ const jimp = require('jimp');
 //joining path of directory 
 /*========== Phần setting=============*/
 
-
-const _fileFrame = "frame/khung (154).png";
+const _fileFrame = "frame/khung (268).png";
 const _folderRoot = "images";
-const _width = 720 || jimp.AUTO; // chiều rộng khung và ảnh hợp nhất
-const _height = 720; // chiều rộng khung và ảnh hợp nhất
-
 /*======== Brand ========*/
 
-const _branDisplay = true;
-const _brand = 'Hà Anh Fashion!';
+const _branDisplay = false;
+const _brand = 'https://bit.ly/3qHl93j';
 const _brandTop = 0; // tên thương hiệu cách trên khung;
-const _brandLeft = 50; // tên thương hiệu cách trái khung
+const _brandLeft = -100; // tên thương hiệu cách trái khung
+const _brandColor = jimp.FONT_SANS_32_WHITE; // hoặc  jimp.FONT_SANS_32_BLACK
 
 /*======== logo ========*/
 const _logoDisplay = true;
 const _logo = "logo/logo.png";
-const _logoSizeWith = 200; // logo chiều rộng
-const _logoSizeHeight = 200; // logo chiều cao
+const _logoSizeWith = 100; // logo chiều rộng
+const _logoSizeHeight = 100; // logo chiều cao
 const _logoTop = 50;
 const _logoLeft = 50;
-
 
 /*=============Code Phần Mềm *============*/
 const directoryPath = path.join(__dirname, _folderRoot);
@@ -35,12 +31,16 @@ try {
     async function merge_image(_folderRoot, _file, _txt, _frame) {
         setTimeout(async () => {
 
-            const font = await jimp.loadFont(jimp.FONT_SANS_32_BLACK)
-
+            const font = await jimp.loadFont(_brandColor)
             const parrot = await jimp.read(_frame)
 
             await jimp.read(_folderRoot + '/' + _file)
                 .then(async image => {
+
+                    _height = image.bitmap.height;
+                    _width = image.bitmap.width;
+
+                    parrot.resize(_width, _height);
 
                     image.resize(_width, _height)
 
@@ -49,13 +49,7 @@ try {
                         let _logoMerge = await jimp.read(_logo).then(logo => logo.resize(_logoSizeWith, _logoSizeHeight));
                         image.blit(_logoMerge, _logoTop, _logoLeft)
                     }
-
-
-                    parrot.resize(_width, _height);
-
-                    image.resize(_width, _height)
-
-
+                  
                     image.blit(parrot, 0, 0);
 
 
@@ -89,8 +83,6 @@ try {
         }, 5000);
     }
 
-
-
     fs.readdir(directoryPath, function (err, files) {
         //handling error
         if (err) {
@@ -107,5 +99,8 @@ try {
 } catch (error) {
     console.log(error);
 }
+
+
+
 
 
